@@ -1,0 +1,516 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only
+     FOUROBOROS V1 installer. The update engine is the proven Felucca/SLOOP one
+     (web/fm1ota.js + web/fm1pkg.js,
+     GPL-3.0-only), used unchanged; this page adds the FOUROBOROS V1 release
+     pins and gates (installer/gate.js) around it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOUROBOROS V1 — install on the FM-1</title>
+<link rel="manifest" href="fouroboros.webmanifest">
+<meta name="theme-color" content="#17102b">
+<link rel="icon" href="icon-192.png">
+<style>
+  :root { --bg: #17102b; --card: #221740; --card2: #1d1436; --fg: #f4f1ff; }
+  :root { --dim: #b3a8d4; --line: #3b2a63; --purple: #8b5cf6; --deep: #5b21b6;
+          --teal: #2dd4bf; --lime: #a3e635; --pink: #f472b6; --amber: #fbbf24; --red: #fb7185; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 20px 14px 56px; }
+  header { text-align: center; padding: 14px 0 4px; }
+  .logo { font-size: 34px; font-weight: 800; letter-spacing: .14em; margin: 0; }
+  .logo .ouro { color: var(--purple); }
+  .tag { color: var(--dim); margin: 4px 0 0; font-size: 14.5px; }
+  .strip { display: flex; height: 5px; border-radius: 3px; overflow: hidden; margin: 16px 0 18px; }
+  .strip i { flex: 1; } .strip i:nth-child(1) { background: #4c1d95; } .strip i:nth-child(2) { background: #7c3aed; }
+  .strip i:nth-child(3) { background: var(--pink); } .strip i:nth-child(4) { background: var(--teal); }
+  .strip i:nth-child(5) { background: var(--lime); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 14px; }
+  .card.calm { background: var(--card2); }
+  .card h2 { font-size: 15px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); margin: 0 0 10px; }
+  .card h2 .step { color: var(--purple); }
+  p { margin: 0 0 10px; }
+  .small { font-size: 13.5px; color: var(--dim); }
+  .tiny { font-size: 12.5px; color: var(--dim); }
+  a { color: var(--teal); }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; word-break: break-all; }
+  dl { margin: 0; } dl div { margin: 0 0 8px; }
+  dt { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); }
+  dd { margin: 2px 0 0; }
+  button { font: inherit; cursor: pointer; border: 0; border-radius: 12px; width: 100%;
+           padding: 16px; min-height: 56px; font-weight: 700; }
+  button.primary { background: var(--purple); color: #fff; font-size: 18px; }
+  button.primary:disabled { background: #372a57; color: var(--dim); cursor: default; }
+  button.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); font-weight: 600; }
+  button.ghost:disabled { color: var(--dim); cursor: default; }
+  button.calm-btn { background: #2c2350; color: var(--fg); border: 1px solid var(--line); }
+  button.calm-btn:disabled { color: var(--dim); cursor: default; }
+  button.copy { width: auto; min-height: 0; padding: 3px 10px; font-size: 12px; border-radius: 8px;
+                background: #372a57; color: var(--fg); font-weight: 600; margin-left: 8px; }
+  .banner { border-radius: 12px; padding: 12px 14px; margin: 0 0 14px; font-size: 14.5px; }
+  .banner.warn { background: #3a2a10; border: 1px solid #92600f; }
+  .banner.bad { background: #3d1220; border: 1px solid #9f1239; }
+  .banner.ok { background: #0f2e25; border: 1px solid #0f766e; }
+  [hidden] { display: none !important; }
+  progress { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border: 0; margin: 10px 0 4px;
+             background: #372a57; border-radius: 4px; }
+  progress::-webkit-progress-bar { background: #372a57; border-radius: 4px; }
+  progress::-webkit-progress-value { background: var(--purple); border-radius: 4px; }
+  progress::-moz-progress-bar { background: var(--purple); border-radius: 4px; }
+  #status, #stock-status { min-height: 1.5em; font-variant-numeric: tabular-nums; }
+  .ident { font-size: 22px; font-weight: 800; letter-spacing: .04em; }
+  .ok-text { color: var(--teal); } .bad-text { color: var(--red); } .warn-text { color: var(--amber); }
+  label.file, label.check { display: block; margin: 10px 0; font-size: 14.5px; }
+  input[type="file"] { display: block; margin-top: 6px; font-size: 14px; max-width: 100%; }
+  details { margin: 14px 0 0; } summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+  pre { color: var(--dim); font-size: 11px; white-space: pre-wrap; word-break: break-all; max-height: 180px; overflow: auto; }
+  .manual-link { display: block; text-align: center; background: #2c2350; border: 1px solid var(--line);
+                 border-radius: 12px; padding: 14px; color: var(--fg); text-decoration: none; font-weight: 700; margin: 0 0 14px; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="logo">FOUR<span class="ouro">O</span>BOROS</p>
+    <p class="tag">Four snakes that grow music — a playable generative sequencer for the M-VAVE FM-1, inside SLOOP's visualiser.</p>
+  </header>
+  <div class="strip"><i></i><i></i><i></i><i></i><i></i></div>
+
+  <a class="manual-link" href="manual.html">📖 Read the FOUROBOROS manual first — it's short and cute</a>
+
+  <div class="banner warn" id="hw-banner">
+    <b>Hardware verification pending.</b> This page and its firmware package are
+    verified in the browser and by checksum (below). The full install from a
+    phone has <b>not</b> been run on a physical FM-1 yet, so treat the first
+    run as a careful smoke test: an interrupted install is resumable (replug,
+    press Install again), and the way back to the official firmware is at the
+    bottom of this page.
+  </div>
+
+  <div class="banner bad" id="nomidi" hidden>
+    <b>This browser can't reach the FM-1.</b> Installing needs Web MIDI with
+    SysEx. Use <b>Chrome on Android</b>, or Chrome / Edge on a computer. If you
+    opened this page from a downloaded file, open it from its web address
+    instead — Chrome on Android won't offer MIDI to a downloaded file.
+  </div>
+
+  <section class="card" aria-label="Release">
+    <h2>The release</h2>
+    <dl>
+      <div><dt>Release</dt><dd><b>FOUROBOROS V1</b></dd></div>
+      <div><dt>Source commit</dt><dd><span class="mono" id="rel-commit">04d0e620485dcb1dc90c644ee17268d7241cdad8</span><button class="copy" data-copy="rel-commit">copy</button></dd></div>
+      <div><dt>Firmware package</dt><dd><span class="mono">felucca-04d0e62.fwsc</span> · 609,912 bytes</dd></div>
+      <div><dt>Package SHA-256</dt><dd><span class="mono" id="rel-sha">4bdc3e2cd6099a712c822e5a59419d69703721b23b8e8a2af597e621edd935c3</span><button class="copy" data-copy="rel-sha">copy</button></dd></div>
+      <div><dt>Package check</dt><dd id="pkg-status">Checking the bundled package…</dd></div>
+    </dl>
+    <p class="small">The Install button only wakes up when the package on this
+      page matches that checksum exactly. Full details:
+      <a href="release-manifest.json">release-manifest.json</a>.</p>
+    <label class="file small">…or use a package file you have:
+      <input id="pkg-file" type="file" accept=".fwsc">
+    </label>
+    <p class="small" id="pkg-file-status"></p>
+  </section>
+
+  <section class="card" aria-label="Connect">
+    <h2><span class="step">Step 1</span> · Connect &amp; check</h2>
+    <p>Plug the FM-1 into this phone (or computer) with a USB <b>data</b>
+      cable, straight in — no hub. Close any other app or tab that might be
+      using MIDI.</p>
+    <p><button class="ghost" id="connect">Connect &amp; check my FM-1</button></p>
+    <div id="device" hidden>
+      <p class="small" style="margin-bottom:2px">Your FM-1 reports:</p>
+      <p class="ident" id="device-id">—</p>
+      <p id="device-note"></p>
+    </div>
+    <div class="banner warn" id="normalize" hidden>
+      <b>This FM-1 isn't on the official V15 yet.</b>
+      <span id="normalize-text">FOUROBOROS V1 installs from the official V15
+      (identity <span class="mono">FM-1_015</span>) — that's the layout its
+      package is built for. Put the official V15 on first: the
+      <b>Restore</b> section at the bottom of this page does exactly that
+      (it works as the way <i>onto</i> V15 too), or use M-VAVE's M-UPGRADE
+      app on a computer. Then come back and press Connect again.</span>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Install">
+    <h2><span class="step">Step 2</span> · Install</h2>
+    <p><button class="primary" id="go" disabled>Install FOUROBOROS V1</button></p>
+    <div class="banner warn" id="writing" hidden>
+      <b>Writing — keep hands off.</b> Don't unplug the cable, don't power
+      the FM-1 off, and don't close this page until it says Done.
+    </div>
+    <progress id="bar" max="100" value="0"></progress>
+    <p id="status">The package check and Step 1 come first.</p>
+    <div class="banner ok" id="done" hidden>
+      <b>Done! 🎉</b> Your FM-1 restarted and reports
+      <span class="mono">FM-1_900</span> — FOUROBOROS V1 is installed.
+      Unplug, open SLOOP's visualiser, pick style 13 · FOUROBOROS, and turn a
+      knob to start. The <a href="manual.html">manual</a> shows the rest.
+    </div>
+    <p class="small">How it works, in plain words: this page first reads parts
+      of the package with the running firmware and stages a small update
+      loader (nothing is written yet). The FM-1 then restarts into that
+      loader, pulls the whole package and writes it, restarts again, and this
+      page checks it now reports <span class="mono">FM-1_900</span>. Your
+      SLOOP projects and settings live outside the firmware area and are not
+      touched.</p>
+    <p class="small">If anything stalls: replug the cable and press Install
+      again — an FM-1 left in update mode simply finishes the write.</p>
+  </section>
+
+  <section class="card calm" id="restore" aria-label="Restore">
+    <h2>Restore original FM-1 firmware</h2>
+    <p>The calm way back. This installs M-VAVE's <b>official V15</b>
+      (<span class="mono">FM-1_015</span>) — the proven base for FOUROBOROS V1,
+      and the version every tool in this family was tested against.</p>
+    <p class="small"><b>Heads-up:</b> the official firmware can't open
+      FOUROBOROS/SLOOP projects. If you made music you love, back it up first
+      (SLOOP editor → Projects → Backup) — reinstalling FOUROBOROS brings it
+      back.</p>
+    <p><label class="check"><input id="stock-saved" type="checkbox">
+      I've saved what I want to keep (or there's nothing to save)</label></p>
+    <p class="small"><b>Get the official V15 file</b> — this page never bundles
+      M-VAVE's firmware; you fetch it from M-VAVE yourself:</p>
+    <p class="small">• The exact file, from M-VAVE's own repository:
+      <a href="https://github.com/m-vave/fm1_open/blob/b178ac43c25f010c60a878056fb5331fe693fd62/sdk/firmware/FM-1_015.fwsc" target="_blank" rel="noopener">FM-1_015.fwsc in m-vave/fm1_open</a><br>
+      • Or M-VAVE's download page (look for the V15 file, FM-1.fwsc):
+      <a href="https://www.m-vave.com/download" target="_blank" rel="noopener">www.m-vave.com/download</a></p>
+    <p><button class="calm-btn" id="stock-fetch">Fetch the official V15 for me</button></p>
+    <label class="file small">…or choose the FM-1.fwsc file you downloaded:
+      <input id="stock-file" type="file" accept=".fwsc">
+    </label>
+    <p class="small" id="stock-file-status">No file checked yet. The file is
+      checked right here in your browser — it is not sent anywhere. Only the
+      exact official V15 is accepted: 699,956 bytes, SHA-256
+      <span class="mono">db1642b2…edb8a</span>.</p>
+    <p><button class="calm-btn" id="stock-go" disabled>Restore Original Firmware (V15)</button></p>
+    <progress id="stock-bar" max="100" value="0" hidden></progress>
+    <p id="stock-status"></p>
+    <div class="banner ok" id="stock-done" hidden>
+      <b>Back on stock.</b> Your FM-1 restarted and reports
+      <span class="mono">FM-1_015</span> — the official V15.
+    </div>
+    <details>
+      <summary class="small">About V16 (please read if your FM-1 is newer)</summary>
+      <p class="small">M-VAVE released a stock V16 on 2026-10-21. Newer isn't
+        automatically safer here: nobody in this firmware family has tested
+        installing from V16 or returning to it, and FOUROBOROS V1's package
+        is built for the V15 layout. So this page restores <b>V15 only</b>
+        and will refuse a V16 file with an explanation. (For the record,
+        V16's package is <span class="mono">FM-1_016</span>, 718,196 bytes,
+        SHA-256 <span class="mono">d017fb65e70aca97ee29d944470c3515a74581df5c0576bf70de917c7b2b61d5</span>
+        — recorded for future compatibility work, not used.) If your FM-1
+        already runs V16, talk to us before installing; the M-UPGRADE route
+        to V15 is the careful path.</p>
+    </details>
+    <p class="tiny">The V15 recovery image (<span class="mono">sdk/firmware/FM-1_015.fwsc</span>)
+      is M-VAVE's own file, distributed by M-VAVE under the Apache License 2.0
+      (see THIRD_PARTY.md in the fm1_open repository). This page downloads or
+      accepts your copy at the moment of use and redistributes nothing.</p>
+  </section>
+
+  <details>
+    <summary>Advanced details &amp; log</summary>
+    <p class="small">Update engine: the Felucca/SLOOP WebMIDI updater
+      (M-UPGRADE-compatible protocol over USB-MIDI SysEx; the device pulls
+      the image; the loader never writes the flash head; an interrupted
+      write stays in update mode and resumes). Release manifest:
+      <a href="release-manifest.json">release-manifest.json</a>. Manual:
+      <a href="manual.html">manual.html</a>.</p>
+    <pre id="log"></pre>
+  </details>
+
+  <hr>
+  <p class="small">Stuck with a silent FM-1? If it runs FOUROBOROS/SLOOP-family
+    firmware, hold <b>OCT−</b> alone while switching on for USB rescue, then
+    install again from here. M-VAVE's own updater M-UPGRADE (Downloads → PC
+    Software) is the vendor-native alternative for the stock side.</p>
+  <p class="small">FOUROBOROS is built on SLOOP / Felucca
+    (GPL-3.0) — no warranty; the firmware is a smoke candidate until the
+    hardware battery passes. M-VAVE and FM-1 are trademarks of their
+    respective owners; this page is not affiliated with them.</p>
+  <p><button class="ghost" id="app" hidden>Install this page as an app (works offline too)</button></p>
+</main>
+
+<script type="module">
+import { Updater, OUR_LOADER } from "../web/fm1ota.js";
+import { RELEASE, STOCK, verifyReleasePackage, validateRestoreFile, classifyDevice } from "./gate.js";
+
+const $ = (id) => document.getElementById(id);
+const log = (t) => { $("log").textContent += t + "\n"; };
+const isOta = (id) => /^ota-/i.test(id.model);
+
+document.querySelectorAll("[data-copy]").forEach((b) =>
+  b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText($(b.dataset.copy).textContent.trim()); b.textContent = "copied ✓"; }
+    catch (_) { b.textContent = "select & copy"; }
+    setTimeout(() => { b.textContent = "copy"; }, 1600);
+  }));
+
+/* the site without internet: opened once online, the installer, its package
+ * and the manual work offline too, still on https (Android: a downloaded
+ * file opens as content://, where Chrome refuses MIDI) */
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol))
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+{
+  let ask = null;
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); ask = e; $("app").hidden = false; });
+  window.addEventListener("appinstalled", () => { ask = null; $("app").hidden = true; });
+  $("app").addEventListener("click", async () => {
+    if (!ask) return;
+    ask.prompt();
+    await ask.userChoice.catch(() => {});
+    ask = null;
+    $("app").hidden = true;
+  });
+}
+
+/* ---------- state ---------- */
+let image = null;          // logical image of the verified release package
+let pkgOk = false;
+let device = { state: "unknown" };
+let stock = null;          // { product, image } of the verified official V15
+let writing = false;
+
+const setStatus = (t) => { $("status").textContent = t; };
+const setStockStatus = (t) => { $("stock-status").textContent = t; };
+
+function refreshButtons() {
+  $("go").disabled = writing || !pkgOk || !(device.state === "ready" || device.state === "resume");
+  $("go").textContent = device.state === "resume" ? "Finish the install" : "Install FOUROBOROS V1";
+  $("connect").disabled = writing || !navigator.requestMIDIAccess;
+  $("stock-go").disabled = writing || !stock || !$("stock-saved").checked;
+  $("stock-file").disabled = writing;
+  $("stock-fetch").disabled = writing;
+  $("pkg-file").disabled = writing;
+}
+function setWriting(on) {
+  writing = on;
+  $("writing").hidden = !on;
+  refreshButtons();
+}
+window.addEventListener("beforeunload", (e) => { if (writing) { e.preventDefault(); e.returnValue = "Writing. Do not close the page."; } });
+
+/* ---------- package gate ---------- */
+async function acceptPackage(bytes, origin) {
+  const v = await verifyReleasePackage(bytes);
+  if (v.ok) {
+    image = v.image; pkgOk = true;
+    $("pkg-status").innerHTML = `<span class="ok-text">✓ verified</span> — checksum matches the release (${origin}).`;
+    log(`package ok (${origin}): ${RELEASE.pkgFile}, sha256 ${v.sha256}`);
+  } else {
+    image = null; pkgOk = false;
+    $("pkg-status").innerHTML = `<span class="bad-text">✗ package rejected</span> — ${v.message}. Install stays off.`;
+    log(`package rejected (${origin}): ${v.message}`);
+  }
+  refreshButtons();
+  return v.ok;
+}
+(async () => {
+  try {
+    const r = await fetch(RELEASE.pkgFile, { cache: "no-cache" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    let bytes = new Uint8Array(await r.arrayBuffer());
+    if (!(await acceptPackage(bytes, "bundled with this page"))) {
+      const r2 = await fetch(RELEASE.pkgFile, { cache: "reload" });   // once more, bypassing any stale cache
+      if (r2.ok) await acceptPackage(new Uint8Array(await r2.arrayBuffer()), "bundled with this page");
+    }
+  } catch (e) {
+    $("pkg-status").innerHTML = `<span class="bad-text">✗ could not load the bundled package</span> — ${e.message}. Pick the file below instead.`;
+  }
+})();
+$("pkg-file").addEventListener("change", async () => {
+  const f = $("pkg-file").files[0];
+  if (!f) return;
+  const bytes = new Uint8Array(await f.arrayBuffer());
+  const v = await verifyReleasePackage(bytes);
+  if (v.ok) {
+    image = v.image; pkgOk = true;
+    $("pkg-file-status").innerHTML = `<span class="ok-text">✓ ${f.name} matches the release checksum</span> — Install will use it.`;
+    $("pkg-status").innerHTML = `<span class="ok-text">✓ verified</span> — checksum matches the release (your file).`;
+  } else {
+    $("pkg-file-status").innerHTML = `<span class="bad-text">✗ ${f.name} rejected</span> — ${v.message}.${pkgOk ? " The verified package is still loaded." : ""}`;
+  }
+  refreshButtons();
+});
+
+/* ---------- step 1: identify (handshake only — nothing is written) ---------- */
+async function getMidi() {
+  try { return await navigator.requestMIDIAccess({ sysex: true }); }
+  catch (_) { return null; }
+}
+function renderDevice() {
+  const d = device;
+  if (d.state === "unknown") return;
+  $("device").hidden = false;
+  $("normalize").hidden = d.state !== "normalize";
+  const note = $("device-note");
+  if (d.state === "none") {
+    $("device-id").textContent = "no FM-1 found";
+    note.innerHTML = "Check the cable (a data cable, straight in, no hub), close other MIDI apps, and press Connect again.";
+  } else if (d.state === "ready") {
+    $("device-id").textContent = d.identity;
+    note.innerHTML = `<span class="ok-text">✓ That's the official V15.</span> Install is ready when you are.`;
+  } else if (d.state === "resume") {
+    $("device-id").textContent = d.identity + " (update mode)";
+    note.innerHTML = `<span class="warn-text">Your FM-1 is waiting in update mode</span> — an earlier install was interrupted. Press <b>Finish the install</b> and it completes the write.`;
+  } else if (d.state === "foreign") {
+    $("device-id").textContent = d.identity + " (update mode)";
+    note.innerHTML = `<span class="bad-text">This FM-1 is in another firmware's update mode.</span> Finish that update with its own updater (M-UPGRADE), then come back. This page never writes to a foreign loader.`;
+  } else if (d.state === "installed") {
+    $("device-id").textContent = d.identity;
+    note.innerHTML = `<span class="ok-text">✓ Installed just now</span> — this is the identity this page verified after the write. (For a clean reinstall later: restore the official V15 below first, then install again.)`;
+  } else if (d.state === "normalize") {
+    $("device-id").textContent = d.identity;
+    note.innerHTML = d.identity === RELEASE.product
+      ? "That's FOUROBOROS itself, already installed. For a clean reinstall, restore the official V15 below first, then install again."
+      : "That's not the official V15 — Install stays off until it is (see the yellow box).";
+  }
+  refreshButtons();
+}
+$("connect").addEventListener("click", async () => {
+  if (!navigator.requestMIDIAccess) { $("nomidi").hidden = false; return; }
+  setStatus("Asking the FM-1 who it is… (nothing is written)");
+  const midi = await getMidi();
+  if (!midi) { setStatus("MIDI (SysEx) access was not allowed. Allow MIDI in the site settings (address bar) and press Connect again."); return; }
+  const up = new Updater(midi, log);
+  const ota = await up.find(isOta);
+  if (ota) { ota.link.close(); device = classifyDevice({ ota: true, id: ota.id }); }
+  else {
+    const dev = await up.find((id) => !isOta(id));
+    if (dev) { dev.link.close(); device = classifyDevice({ ota: false, id: dev.id }); }
+    else device = classifyDevice(null);
+  }
+  renderDevice();
+  setStatus(device.state === "ready" || device.state === "resume" ? "Checked. See Step 2." : "Checked — see what your FM-1 reported above.");
+});
+
+/* ---------- shared progress / errors (the engine's step keys) ---------- */
+function stepper(barEl, statusFn) {
+  const total = 74 + Math.ceil((image ? image.length : RELEASE.pkgSize) / 512);
+  return (k, a) => {
+    log(`${k} ${a ?? ""}`);
+    if (k === "start") statusFn(`Starting — the FM-1 reports ${a}`);
+    if (k === "verify") { statusFn("Step 1 of 2 — the FM-1 is reading the package and staging its update loader (nothing written yet)"); barEl.value = Math.min(100, (a / total) * 100); }
+    if (k === "loader") statusFn("Switching to update mode…");
+    if (k === "write") { statusFn("Step 2 of 2 — writing. Don't unplug, don't close this page."); barEl.value = Math.min(100, ((74 + a) / total) * 100); }
+    if (k === "reboot") statusFn("Restarting the FM-1…");
+    if (k === "done") { barEl.value = 100; statusFn(`Done — the FM-1 now reports ${a}`); }
+  };
+}
+const ERR = {
+  denied: "MIDI (SysEx) access was not allowed. Allow MIDI in the site settings (address bar) and try again.",
+  notfound: "FM-1 not found. Check the USB cable (a data cable), close other apps that use MIDI, and try again.",
+  model: "The connected device is not an FM-1.",
+  lost: "The USB connection was lost. Replug it and press the button again — an interrupted write resumes.",
+  stopped: "Stopped partway. Replug the USB cable and press the button again to resume.",
+  noloader: "The FM-1 in update mode was not found. Replug the USB cable and press again (it stays in update mode until the write is finished).",
+  noreturn: "The FM-1 did not come back. Power-cycle it, then Connect again.",
+  mismatch: "Written, but the FM-1 reports a different version than expected: ",
+  foreign: "The FM-1 is in the update mode of another firmware. Finish that update with its own updater (M-UPGRADE), then try again: ",
+  badpkg: "The file to install is damaged. Reload the page.",
+};
+function failed(e, statusFn) {
+  if (e && e.code && ERR[e.code]) statusFn((e.code === "mismatch" || e.code === "foreign") ? ERR[e.code] + (e.detail || "") : ERR[e.code]);
+  else statusFn("Error: " + (e && e.message));
+  log(String((e && e.stack) || e));
+}
+
+/* ---------- step 2: install (engine flow, gated) ---------- */
+$("go").addEventListener("click", async () => {
+  if (writing || !pkgOk || !(device.state === "ready" || device.state === "resume")) return;
+  const midi = await getMidi();
+  if (!midi) { setStatus(ERR.denied); return; }
+  setWriting(true);
+  $("done").hidden = true;
+  $("bar").value = 0;
+  try {
+    const up = new Updater(midi, log);
+    if (device.state === "resume") {
+      const doneRes = await up.resume(image, stepper($("bar"), setStatus));
+      if (!doneRes) setStatus(ERR.stopped);
+      else $("done").hidden = false;
+    } else {
+      await up.install(image, RELEASE.product, stepper($("bar"), setStatus));
+      $("done").hidden = false;
+    }
+    if (!$("done").hidden) { device = { state: "installed", identity: RELEASE.product }; renderDevice(); }
+  } catch (e) { failed(e, setStatus); }
+  setWriting(false);
+});
+
+/* ---------- restore: the exact official V15 only ---------- */
+async function acceptStock(bytes, origin) {
+  const v = await validateRestoreFile(bytes);
+  if (v.ok) {
+    stock = v;
+    $("stock-file-status").innerHTML = `<span class="ok-text">✓ Official V15 verified</span> (${origin}) — identity ${v.product}, every byte matches M-VAVE's file. Restore is ready.`;
+    log(`stock ok (${origin}): ${STOCK.fileName} = ${v.product}`);
+  } else {
+    stock = null;
+    $("stock-file-status").innerHTML = `<span class="bad-text">✗ refused</span> — ${v.message}`;
+    log(`stock refused (${origin}): ${v.message}`);
+  }
+  refreshButtons();
+  return v.ok;
+}
+$("stock-file").addEventListener("change", async () => {
+  const f = $("stock-file").files[0];
+  if (!f) return;
+  await acceptStock(new Uint8Array(await f.arrayBuffer()), `your file ${f.name}`);
+});
+$("stock-fetch").addEventListener("click", async () => {
+  setStockStatus("Fetching the official V15 from M-VAVE's repository…");
+  try {
+    const r = await fetch(STOCK.sourceRaw, { cache: "no-cache" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const okk = await acceptStock(new Uint8Array(await r.arrayBuffer()), "fetched from M-VAVE's fm1_open repository");
+    setStockStatus(okk ? "Fetched and verified — Restore is ready." : "The fetched file did not verify. Use the file picker instead.");
+  } catch (e) {
+    setStockStatus(`Couldn't fetch it (${e.message}). Download the file yourself (links above) and pick it below.`);
+  }
+});
+$("stock-saved").addEventListener("change", refreshButtons);
+$("stock-go").addEventListener("click", async () => {
+  if (writing || !stock || !$("stock-saved").checked) return;
+  if (!confirm("Restore the official FM-1 V15 on this FM-1? The official firmware cannot open FOUROBOROS/SLOOP projects. Did you save a backup?")) return;
+  const midi = await getMidi();
+  if (!midi) { setStockStatus(ERR.denied); return; }
+  setWriting(true);
+  $("stock-done").hidden = true;
+  $("stock-bar").hidden = false;
+  $("stock-bar").value = 0;
+  const step = stepper($("stock-bar"), setStockStatus);
+  try {
+    const up = new Updater(midi, log);
+    const ota = await up.find(isOta);
+    if (ota) {
+      ota.link.close();
+      if (OUR_LOADER(ota.id)) setStockStatus("The FM-1 is in FOUROBOROS's update mode. Press Install (Step 2) to finish that install first, then restore.");
+      else {
+        const doneRes = await up.resume(stock.image, step, { product: stock.product });
+        if (doneRes) $("stock-done").hidden = false; else setStockStatus(ERR.stopped);
+      }
+    } else {
+      await up.install(stock.image, stock.product, step);
+      $("stock-done").hidden = false;
+    }
+  } catch (e) { failed(e, setStockStatus); }
+  setWriting(false);
+});
+
+/* ---------- boot ---------- */
+if (!navigator.requestMIDIAccess) {
+  $("nomidi").hidden = false;
+  $("connect").disabled = true;
+}
+refreshButtons();
+</script>
+</body>
+</html>

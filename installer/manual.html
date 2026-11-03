@@ -1,0 +1,269 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-only
+     FOUROBOROS V1 — the friendly manual. Every behaviour described here is
+     from the frozen V1 build's proven record (FREEZE-BATTERY / PROOF-REPORT);
+     anything not yet seen on a physical FM-1 is marked as a capture slot
+     instead of being faked. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOUROBOROS V1 — manual</title>
+<meta name="theme-color" content="#17102b">
+<link rel="icon" href="icon-192.png">
+<style>
+  :root { --bg: #17102b; --card: #221740; --fg: #f4f1ff; --dim: #b3a8d4; --line: #3b2a63;
+          --purple: #8b5cf6; --teal: #2dd4bf; --lime: #a3e635; --pink: #f472b6; --amber: #fbbf24; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 20px 14px 56px; }
+  h1 { font-size: 30px; letter-spacing: .1em; text-align: center; margin: 10px 0 2px; }
+  h1 .ouro { color: var(--purple); }
+  .tag { text-align: center; color: var(--dim); margin: 0 0 18px; font-size: 14.5px; }
+  h2 { font-size: 19px; margin: 30px 0 8px; }
+  h2 .n { color: var(--purple); }
+  p { margin: 0 0 10px; }
+  .small { font-size: 13.5px; color: var(--dim); }
+  a { color: var(--teal); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 0 0 12px; }
+  figure { margin: 12px 0; text-align: center; }
+  figure img { width: 240px; max-width: 80%; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 8px; }
+  figcaption { font-size: 12.5px; color: var(--dim); margin-top: 6px; }
+  .slot { border: 2px dashed var(--amber); border-radius: 12px; padding: 18px 14px; margin: 12px 0;
+          text-align: center; color: var(--amber); font-size: 14px; background: #2a2110; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  th { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 4px;
+           background: #372a57; color: var(--teal); vertical-align: 2px; }
+  .badge.hold { color: var(--pink); }
+  ul { margin: 4px 0 12px; padding-left: 22px; }
+  li { margin: 0 0 5px; }
+  .back { display: block; text-align: center; background: #2c2350; border: 1px solid var(--line); border-radius: 12px;
+          padding: 14px; color: var(--fg); text-decoration: none; font-weight: 700; margin: 18px 0; }
+  .keys { font-weight: 700; color: var(--amber); }
+</style>
+</head>
+<body>
+<main>
+  <h1>FOUR<span class="ouro">O</span>BOROS</h1>
+  <p class="tag">the friendly manual · V1 · for the M-VAVE FM-1</p>
+  <a class="back" href="index.html">← Back to the installer</a>
+
+  <h2><span class="n">Hello!</span> What is this?</h2>
+  <p>FOUROBOROS is a little game that writes music. Four snakes glide around
+    a board inside SLOOP's visualiser. Where a snake eats, it writes notes
+    and drum hits into SLOOP's four tracks — bass, lead, chords, drums — and
+    SLOOP plays them. The longer a snake grows, the richer the music gets:
+    the snake's body <i>is</i> the song, in order.</p>
+  <p>Good news: <b>the snakes never die.</b> The screen wraps around, nobody
+    crashes, and if a snake gets as long as it can, its oldest tail notes
+    quietly drop away to make room. Leave a snake alone for about five
+    seconds and it steers itself. It's a garden, not an exam. 🌱</p>
+
+  <h2><span class="n">1.</span> Installing</h2>
+  <p>Everything happens on the <a href="index.html">installer page</a>:
+    plug in → the page checks the package checksum and asks your FM-1 who it
+    is → Install → the page verifies the FM-1 now runs FOUROBOROS. Your FM-1
+    needs to be on M-VAVE's official V15 first; if it isn't, the installer's
+    Restore section puts V15 on (it's the way onto V15 as well as the way
+    back). Full warnings live on the installer — the short version is:
+    <b>don't unplug during the write.</b></p>
+
+  <h2><span class="n">2.</span> First boot &amp; getting in</h2>
+  <p>After installing, your FM-1 boots into SLOOP as usual. Open the
+    <b>visualiser</b> and choose <b>style 13 · FOUROBOROS</b> (the style
+    picker says FOUROBOROS too). You'll land on the attract screen:</p>
+  <figure>
+    <img src="assets/attract-host-render.png" alt="FOUROBOROS attract screen: FOUROBOROS, the level name PAPER KITE FESTIVAL, K1-K4 STEER, PRESET LEVEL, TURN A KNOB TO START">
+    <figcaption>The attract screen, rendered by the frozen V1 build itself
+      (host render — the FM-1's screen shows exactly this). It names the
+      level and the two things to know: <b>K1–K4 steer</b>, <b>PRESET picks
+      the level</b>.</figcaption>
+  </figure>
+  <div class="slot">📸 CAPTURE SLOT — a photo of a real FM-1 showing this
+    attract screen will live here once the hardware battery runs. Nothing
+    here is faked in the meantime.</div>
+  <ul>
+    <li><b>Turn a knob to start</b> — that's the whole doorbell.</li>
+    <li><b>PRESET</b> chooses among the 16 levels (the attract card names each one as you pass it).</li>
+    <li><b>EXIT</b> leaves the game and returns SLOOP to exactly how it was
+      before — your edits and settings are restored byte for byte.</li>
+  </ul>
+
+  <h2><span class="n">3.</span> Meet the snakes &amp; their food</h2>
+  <p>Four snakes, four musical jobs: <b>bass</b>, <b>lead</b>, <b>chords</b>,
+    <b>drums</b>. Steer with <b>K1–K4</b>. Food appears in fixed colours —
+    the colours are identities, and they never change meaning:</p>
+  <ul>
+    <li><span style="color:#7c3aed">■</span> dark purple — 808</li>
+    <li><span style="color:#a855f7">■</span> purple — kick</li>
+    <li><span style="color:#f472b6">■</span> pink — snare</li>
+    <li><span style="color:#2dd4bf">■</span> teal — voice</li>
+    <li><span style="color:#a3e635">■</span> lime — hat</li>
+    <li><span style="color:#60a5fa">■</span> blue — pad</li>
+  </ul>
+  <p>What a snake eats is what it writes next. Eat, grow, and the sequence
+    develops — that's the whole instrument.</p>
+  <figure>
+    <img src="assets/board-host-render.png" alt="The FOUROBOROS board during play: snakes, coloured food, and the level name DUB WEIGHT under the board">
+    <figcaption>The board during play (host render of the frozen build,
+      level: Dub Weight). Snakes and coloured food on the grid; the level's
+      name sits in small type under the board while you play.</figcaption>
+  </figure>
+  <div class="slot">📸 CAPTURE SLOT — a photo of a real FM-1 mid-game, with
+    the little A/B/C marker beside the board circled, goes here after the
+    hardware battery.</div>
+
+  <h2><span class="n">4.</span> The 16 levels</h2>
+  <p>Every level is its own little world — its own tempo, key, groove and
+    personality. Two badges to know: <span class="badge">ARP</span> levels
+    have a built-in arpeggio layer, and
+    <span class="badge hold">HOLD</span> levels hold your keyboard notes for you.</p>
+  <table>
+    <tr><th>#</th><th>Level</th><th>Tempo</th><th>Key</th></tr>
+    <tr><td>1</td><td>Paper Kite Festival</td><td>128</td><td>G major</td></tr>
+    <tr><td>2</td><td>Dub Weight <span class="badge">ARP</span></td><td>120</td><td>F minor</td></tr>
+    <tr><td>3</td><td>Accordion in the Rain</td><td>90</td><td>D minor</td></tr>
+    <tr><td>4</td><td>Candlejar <span class="badge hold">HOLD</span></td><td>72</td><td>C major</td></tr>
+    <tr><td>5</td><td>Something in the Walls</td><td>78</td><td>D minor</td></tr>
+    <tr><td>6</td><td>Blue Window</td><td>82</td><td>D minor</td></tr>
+    <tr><td>7</td><td>Little Ghost</td><td>76</td><td>C minor</td></tr>
+    <tr><td>8</td><td>Last Candle</td><td>64</td><td>C major</td></tr>
+    <tr><td>9</td><td>Basement Weather <span class="badge">ARP</span></td><td>90</td><td>F major</td></tr>
+    <tr><td>10</td><td>Iron Garden <span class="badge">ARP</span></td><td>136</td><td>D minor</td></tr>
+    <tr><td>11</td><td>Two Thumbs</td><td>80</td><td>C major</td></tr>
+    <tr><td>12</td><td>Rain on the Monorail</td><td>172</td><td>B minor</td></tr>
+    <tr><td>13</td><td>Paper Stars</td><td>72</td><td>C major</td></tr>
+    <tr><td>14</td><td>Caravan of Small Hours</td><td>116</td><td>E minor</td></tr>
+    <tr><td>15</td><td>Deep Space Bloom <span class="badge">ARP</span></td><td>64</td><td>E major</td></tr>
+    <tr><td>16</td><td>Seaside Chapel <span class="badge hold">HOLD</span></td><td>58</td><td>C major</td></tr>
+  </table>
+
+  <h2><span class="n">5.</span> Sound groups A / B / C</h2>
+  <p>Every level has three sound groups — three outfits for the same song.
+    Turn the <b>ALGORITHM</b> knob: one click = one step (A → B → C, and
+    back the way you came). A tiny marker beside the board shows where you
+    are: <b>top = A, middle = B, low = C</b>. Changing group changes the
+    sounds, never the pattern, the game, or the transport. Entering a level
+    always starts on A; PLAY/STOP keeps your group; EXIT forgets it, so the
+    next visit starts fresh on A.</p>
+
+  <h2><span class="n">6.</span> Playing the keys</h2>
+  <p><b>White keys play the music:</b> full chords of the level's current
+    harmony, with inversions as you move across the keys.</p>
+  <p><b>Black keys transform it:</b> every level curates its own little set
+    of transformations that fit its world — a ghostly level leans toward
+    slow filters and space, a rhythmic one toward chops and stutters.
+    Black always means <i>transformation</i>; what kind is the level's
+    choice. As a piece develops (see FORM, below), deeper black-key slots
+    wake up. Two tricks to try:</p>
+  <ul>
+    <li><b>Fill gesture:</b> hold a white chord key and tap a black key.</li>
+    <li><b>Seaside Chapel, black key 0:</b> thunder. 🌩 One key — crack,
+      body, a swell a moment later, and a long soft roll. (Rain, in that
+      level's group C, is the opposite: a dark wash that always stays
+      <i>under</i> the music, with five soft droplet pings per cycle.)</li>
+  </ul>
+
+  <h2><span class="n">7.</span> ARP &amp; keyboard hold</h2>
+  <p>Some levels carry an authored <b>arpeggio layer</b> (the
+    <span class="badge">ARP</span> levels above), written per level and per
+    sound group. It's deterministic — the same playing grows the same
+    pattern — and it's simply not there on the other levels, by design.
+    On <span class="badge hold">HOLD</span> levels (Candlejar, Seaside
+    Chapel) the keyboard holds your notes for you. And whatever arp/hold
+    settings you use in SLOOP itself are restored exactly when you EXIT —
+    the game borrows nothing permanently.</p>
+
+  <h2><span class="n">8.</span> FEEL, speed &amp; octave</h2>
+  <ul>
+    <li><b>FEEL K1</b> — density: how crowded the music may get.</li>
+    <li><b>FEEL K2</b> — activity: how much food, how busy the board.</li>
+    <li><b>FEEL K3</b> — regeneration: how quickly food returns.</li>
+    <li><b>FEEL K4</b> — HOLD / EVOLVE: freeze the development where it is, or let it keep growing.</li>
+    <li><b>SEQ speed</b> — one ladder of eight: 0.5× · 0.75× · 1× · 1.25× · 1.5× · 2× · 4× · 8×. A fresh entry always starts at 1×.</li>
+    <li><b>OCT</b> — transpose ±2 octaves.</li>
+  </ul>
+  <p class="small">FEEL and speed are different knobs on purpose: speed is
+    only the clock; FEEL is how the world behaves at that speed.</p>
+
+  <h2><span class="n">9.</span> SAVE &amp; KEEP — keeping what grew</h2>
+  <ul>
+    <li><b>SAVE</b> stores a section's loop so it survives. Rich six-note
+      chords are saved with a smart four-voice voicing (the fifth drops
+      first, then the root) — that's by design, and it's what KEEP uses
+      too. One designed refusal: a section with the Amen profile won't
+      SAVE — the game will tell you, and nothing is stored.</li>
+    <li><b>KEEP</b> (EDIT) takes the loop you grew into ordinary SLOOP
+      editing (it lands in section A), so you can work on it like any
+      SLOOP music.</li>
+    <li><b>CANCEL / HOME</b> always put things back byte for byte —
+      nothing is ever half-applied.</li>
+    <li><b>SEEDED canvases</b> are shared, deterministic boards: the same
+      seed grows the same canvas.</li>
+  </ul>
+
+  <h2><span class="n">10.</span> FORM &amp; Motion — the piece develops</h2>
+  <p>Underneath the game, each level has a <b>form</b>: as you keep
+    playing, the music moves through its sections and develops — phrases
+    answer each other, energy rises, new black-key transformations wake,
+    and at high energy the chord voicings literally spread wider. Motion
+    and fills follow the form, so a long session doesn't just loop — it
+    goes somewhere, and it comes back changed. The golden rule of the
+    design: a piece must sound good untouched; your playing deepens it,
+    never rescues it.</p>
+
+  <h2><span class="n">11.</span> Going back to stock</h2>
+  <p>Use the installer's <b>Restore Original FM-1 Firmware</b> section: it
+    installs M-VAVE's official V15 — and only that exact file, checked byte
+    for byte in your browser before anything is written. The official
+    firmware can't open FOUROBOROS/SLOOP projects, so back up first if
+    there's music you love. M-VAVE's own M-UPGRADE app (on a computer)
+    does the same job the vendor's way.</p>
+
+  <h2><span class="n">12.</span> Troubleshooting &amp; USB rescue</h2>
+  <ul>
+    <li><b>Install stopped halfway?</b> Don't panic — the FM-1 stays in
+      update mode. Replug the cable and press Install again; it finishes
+      the write.</li>
+    <li><b>The page can't find the FM-1:</b> use a data cable (some cables
+      only charge), plug straight in (no hub), close other MIDI apps and
+      tabs, and allow MIDI when the browser asks.</li>
+    <li><b>The browser won't offer MIDI:</b> the page must be opened from
+      its web address (or as the installed app) in Chrome — a downloaded
+      HTML file on Android can't use MIDI.</li>
+    <li><b>FM-1 silent / won't start (running FOUROBOROS-family
+      firmware):</b> hold <b>OCT−</b> alone while switching on — USB
+      rescue — then install again from the installer page.</li>
+    <li><b>M-UPGRADE says “Failed to enter upgrade mode!”:</b> keep it
+      open, unplug and re-plug the USB cable, continue (M-VAVE's own
+      remedy).</li>
+    <li><b>Nothing enumerates at all, ever:</b> the last-resort hardware
+      route is the FM-1 Transporter dongle. Rare, documented, and very
+      unlikely to be you.</li>
+  </ul>
+
+  <h2><span class="n">13.</span> Which version do I have?</h2>
+  <p>Ask the installer: Step 1 reads the FM-1's identity without writing
+    anything.</p>
+  <ul>
+    <li><span class="keys">FM-1_900</span> — FOUROBOROS V1 (this release,
+      commit <span class="small">04d0e62…</span>).</li>
+    <li><span class="keys">FM-1_015</span> — M-VAVE's official V15 (stock).</li>
+    <li><span class="keys">ota-FM-1_9xx</span> — the FM-1 is sitting in
+      update mode; finish the install.</li>
+  </ul>
+  <p class="small">The exact package checksum lives on the
+    <a href="index.html">installer page</a> and in
+    <a href="release-manifest.json">release-manifest.json</a> — if the
+    bytes don't match it, the installer simply refuses to write. That's
+    the point. 🐍</p>
+
+  <a class="back" href="index.html">← Back to the installer</a>
+  <p class="small" style="text-align:center">FOUROBOROS V1 · built on SLOOP/Felucca (GPL-3.0) ·
+    hardware verification pending — see the installer page.</p>
+</main>
+</body>
+</html>
